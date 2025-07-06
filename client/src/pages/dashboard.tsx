@@ -1,10 +1,15 @@
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Users, Heart, MapPin, TrendingUp, Mail, Phone, Navigation } from "lucide-react";
+import { getQueryFn } from "@/lib/queryClient";
 import { Overview } from "@/components/dashboard/overview";
 import { RecentMatches } from "@/components/dashboard/recent-matches";
 import { NearbyTeachers } from "@/components/dashboard/nearby-teachers";
+import { LocationSettings } from "@/components/dashboard/location-settings";
 import { useLocation } from "wouter";
 import { useEffect } from "react";
 import { Link } from "wouter";
@@ -106,14 +111,40 @@ export default function Dashboard() {
 
         {/* Content */}
         <div className="space-y-8">
-          {/* Overview Section */}
-          {stats && <Overview stats={stats} />}
+          <Tabs defaultValue="overview" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="matches">Recent Matches</TabsTrigger>
+            <TabsTrigger value="nearby">Nearby Teachers</TabsTrigger>
+            <TabsTrigger value="location">
+              <Navigation className="h-4 w-4 mr-2" />
+              Precise Location
+            </TabsTrigger>
+          </TabsList>
 
-          {/* Recent Matches and Nearby Teachers */}
+          <TabsContent value="overview" className="space-y-4">
+            {stats && <Overview stats={stats} />}
+          </TabsContent>
+
+          <TabsContent value="matches" className="space-y-4">
+             <RecentMatches matches={perfectMatches} onViewMatch={handleViewMatch} />
+          </TabsContent>
+
+          <TabsContent value="nearby" className="space-y-4">
+            <NearbyTeachers />
+          </TabsContent>
+
+          <TabsContent value="location" className="space-y-4">
+            <LocationSettings teacher={teacher} />
+          </TabsContent>
+        </Tabs>
+        {/* Recent Matches and Nearby Teachers */}
+          {/*
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <RecentMatches matches={perfectMatches} onViewMatch={handleViewMatch} />
             <NearbyTeachers nearbyTeachers={nearbyTeachers} onViewTeacher={handleViewMatch} />
           </div>
+          */}
         </div>
       </div>
     </div>

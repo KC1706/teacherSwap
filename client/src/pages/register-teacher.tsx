@@ -22,15 +22,9 @@ const teacherSchema = z.object({
   phoneNumber: z.string().min(10, "Please enter a valid phone number"),
   currentSchool: z.string().min(2, "School name must be at least 2 characters"),
   currentSchoolAddress: z.string().min(5, "Please enter the complete school address"),
-  currentSchoolLatitude: z.number().optional(),
-  currentSchoolLongitude: z.number().optional(),
   currentDistrict: z.string().min(1, "Please select current district"),
   homeDistrict: z.string().min(1, "Please select home district"),
-  homeLatitude: z.number().optional(),
-  homeLongitude: z.number().optional(),
   preferredDistricts: z.array(z.string()).min(1, "Please select at least one preferred district"),
-  preferredLocationLatitude: z.number().optional(),
-  preferredLocationLongitude: z.number().optional(),
   maxDistance: z.number().min(25).max(200).default(100),
   experience: z.number().min(0).max(40).default(0),
   hideContact: z.boolean().default(true),
@@ -118,49 +112,7 @@ export default function RegisterTeacher() {
     }
   };
 
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          form.setValue("currentSchoolLatitude", position.coords.latitude);
-          form.setValue("currentSchoolLongitude", position.coords.longitude);
-          toast({
-            title: "Location captured",
-            description: "Current school location has been set automatically",
-          });
-        },
-        (error) => {
-          toast({
-            title: "Location error",
-            description: "Could not get current location. Please enter manually if needed.",
-            variant: "destructive",
-          });
-        }
-      );
-    }
-  };
-
-  const getHomeLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          form.setValue("homeLatitude", position.coords.latitude);
-          form.setValue("homeLongitude", position.coords.longitude);
-          toast({
-            title: "Home location captured",
-            description: "Home location has been set automatically",
-          });
-        },
-        (error) => {
-          toast({
-            title: "Location error",
-            description: "Could not get current location. Please enter manually if needed.",
-            variant: "destructive",
-          });
-        }
-      );
-    }
-  };
+  
 
   if (!isAuthenticated) {
     return null;
@@ -318,53 +270,7 @@ export default function RegisterTeacher() {
                     )}
                   />
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-900">School Location (Optional)</label>
-                    <div className="flex space-x-2">
-                      <FormField
-                        control={form.control}
-                        name="currentSchoolLatitude"
-                        render={({ field }) => (
-                          <FormItem className="flex-1">
-                            <FormControl>
-                              <Input 
-                                type="number" 
-                                step="any"
-                                placeholder="Latitude" 
-                                {...field}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="currentSchoolLongitude"
-                        render={({ field }) => (
-                          <FormItem className="flex-1">
-                            <FormControl>
-                              <Input 
-                                type="number" 
-                                step="any"
-                                placeholder="Longitude" 
-                                {...field}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button type="button" variant="outline" onClick={getCurrentLocation}>
-                        Use Current Location
-                      </Button>
-                    </div>
-                    <p className="text-xs text-gray-500">
-                      Precise location helps find nearby teachers more accurately
-                    </p>
-                  </div>
+                  
                 </div>
 
                 {/* Location Information */}
@@ -421,50 +327,7 @@ export default function RegisterTeacher() {
                     )}
                   />
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-900">Home Location (Optional)</label>
-                    <div className="flex space-x-2">
-                      <FormField
-                        control={form.control}
-                        name="homeLatitude"
-                        render={({ field }) => (
-                          <FormItem className="flex-1">
-                            <FormControl>
-                              <Input 
-                                type="number" 
-                                step="any"
-                                placeholder="Home Latitude" 
-                                {...field}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="homeLongitude"
-                        render={({ field }) => (
-                          <FormItem className="flex-1">
-                            <FormControl>
-                              <Input 
-                                type="number" 
-                                step="any"
-                                placeholder="Home Longitude" 
-                                {...field}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button type="button" variant="outline" onClick={getHomeLocation}>
-                        Use Current Location
-                      </Button>
-                    </div>
-                  </div>
+                  
 
                   <FormField
                     control={form.control}
@@ -496,50 +359,7 @@ export default function RegisterTeacher() {
                     )}
                   />
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-900">Preferred Transfer Location (Optional)</label>
-                    <div className="flex space-x-2">
-                      <FormField
-                        control={form.control}
-                        name="preferredLocationLatitude"
-                        render={({ field }) => (
-                          <FormItem className="flex-1">
-                            <FormControl>
-                              <Input 
-                                type="number" 
-                                step="any"
-                                placeholder="Preferred Latitude" 
-                                {...field}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="preferredLocationLongitude"
-                        render={({ field }) => (
-                          <FormItem className="flex-1">
-                            <FormControl>
-                              <Input 
-                                type="number" 
-                                step="any"
-                                placeholder="Preferred Longitude" 
-                                {...field}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <p className="text-xs text-gray-500">
-                      Set exact coordinates for your preferred transfer location for better matching
-                    </p>
-                  </div>
+                  
 
                   <FormField
                     control={form.control}
