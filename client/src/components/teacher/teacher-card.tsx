@@ -11,6 +11,7 @@ interface Teacher {
   currentDistrict: string;
   homeDistrict: string;
   experience: number;
+  subjects: string[];
 }
 
 interface MatchResult {
@@ -59,6 +60,13 @@ export function TeacherCard({ match, onSendRequest, onViewProfile, isRequestPend
             <MapPin className="h-4 w-4 text-gray-400 mr-2" />
             <span>{teacher.currentDistrict} → {teacher.homeDistrict}</span>
           </div>
+          <div className="mb-3 flex flex-wrap gap-1">
+          {teacher.subjects.map((subject, index) => (
+            <Badge key={index} variant="secondary" className="text-xs">
+              {subject}
+            </Badge>
+          ))}
+        </div>
           <div className="flex items-center text-sm text-gray-600">
             <Award className="h-4 w-4 text-gray-400 mr-2" />
             <span>{teacher.experience} years experience</span>

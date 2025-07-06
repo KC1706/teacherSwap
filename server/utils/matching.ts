@@ -122,22 +122,41 @@ function calculateDistanceToHome(teacher: TeacherWithUser): number {
 }
 
 function calculateDistanceFromTeacherToHome(teacher: TeacherWithUser, homeTeacher: TeacherWithUser): number {
-  if (teacher.currentLatitude && teacher.currentLongitude && 
-      homeTeacher.homeLatitude && homeTeacher.homeLongitude) {
-    return haversineDistance(
-      parseFloat(teacher.currentLatitude),
-      parseFloat(teacher.currentLongitude),
-      parseFloat(homeTeacher.homeLatitude),
-      parseFloat(homeTeacher.homeLongitude)
-    );
+  // Use precise school coordinates if available
+  let teacherLat, teacherLng, homeLat, homeLng;
+  
+  // Teacher's current location (prefer school coordinates, then current coordinates, then district)
+  if (teacher.currentSchoolLatitude && teacher.currentSchoolLongitude) {
+    teacherLat = parseFloat(teacher.currentSchoolLatitude);
+    teacherLng = parseFloat(teacher.currentSchoolLongitude);
+  } else if (teacher.currentLatitude && teacher.currentLongitude) {
+    teacherLat = parseFloat(teacher.currentLatitude);
+    teacherLng = parseFloat(teacher.currentLongitude);
+  } else {
+    const teacherCoords = getDistrictCoordinates(teacher.currentDistrict);
+    if (teacherCoords) {
+      teacherLat = teacherCoords.lat;
+      teacherLng = teacherCoords.lng;
+    }
   }
   
-  // Fallback to district coordinates
-  const teacherCoords = getDistrictCoordinates(teacher.currentDistrict);
-  const homeCoords = getDistrictCoordinates(homeTeacher.homeDistrict);
+  // Home teacher's location (prefer home coordinates, then preferred location, then district)
+  if (homeTeacher.homeLatitude && homeTeacher.homeLongitude) {
+    homeLat = parseFloat(homeTeacher.homeLatitude);
+    homeLng = parseFloat(homeTeacher.homeLongitude);
+  } else if (homeTeacher.preferredLocationLatitude && homeTeacher.preferredLocationLongitude) {
+    homeLat = parseFloat(homeTeacher.preferredLocationLatitude);
+    homeLng = parseFloat(homeTeacher.preferredLocationLongitude);
+  } else {
+    const homeCoords = getDistrictCoordinates(homeTeacher.homeDistrict);
+    if (homeCoords) {
+      homeLat = homeCoords.lat;
+      homeLng = homeCoords.lng;
+    }
+  }
   
-  if (teacherCoords && homeCoords) {
-    return haversineDistance(teacherCoords.lat, teacherCoords.lng, homeCoords.lat, homeCoords.lng);
+  if (teacherLat && teacherLng && homeLat && homeLng) {
+    return haversineDistance(teacherLat, teacherLng, homeLat, homeLng);
   }
   
   return 0;
