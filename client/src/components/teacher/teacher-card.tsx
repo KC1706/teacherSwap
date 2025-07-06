@@ -53,38 +53,32 @@ export function TeacherCard({ match, onSendRequest, onViewProfile, isRequestPend
 
         <div className="space-y-3 mb-4">
           <div className="flex items-center text-sm text-gray-600">
-            <School className="h-4 w-4 mr-2" />
+            <School className="h-4 w-4 text-gray-400 mr-2" />
             <span>{teacher.currentSchool}</span>
           </div>
           <div className="flex items-center text-sm text-gray-600">
-            <MapPin className="h-4 w-4 mr-2" />
-            <span>{teacher.currentDistrict}</span>
+            <MapPin className="h-4 w-4 text-gray-400 mr-2" />
+            <span>{teacher.currentDistrict} → {teacher.homeDistrict}</span>
           </div>
+          <div className="mb-3 flex flex-wrap gap-1">
+          {teacher.subjects.map((subject, index) => (
+            <Badge key={index} variant="secondary" className="text-xs">
+              {subject}
+            </Badge>
+          ))}
+        </div>
           <div className="flex items-center text-sm text-gray-600">
-            <Route className="h-4 w-4 mr-2" />
-            <span>Home: {teacher.homeDistrict}</span>
-          </div>
-          <div className="flex items-center text-sm text-gray-600">
-            <Award className="h-4 w-4 mr-2" />
+            <Award className="h-4 w-4 text-gray-400 mr-2" />
             <span>{teacher.experience} years experience</span>
           </div>
           <div className="flex items-center text-sm text-gray-600">
-            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-              Grade: {teacher.gradeLevel}
+            <Route className="h-4 w-4 text-gray-400 mr-2" />
+            <span>
+              {matchType === 'perfect' 
+                ? 'Perfect mutual match' 
+                : `${distance.toFixed(1)} km away`
+              }
             </span>
-            {Array.isArray(teacher.subjects) && teacher.subjects.length > 0 && (
-              <span className="text-xs bg-blue-100 px-2 py-1 rounded ml-2">
-                {teacher.subjects.join(', ')}
-              </span>
-            )}
-          </div>
-          {distance && (
-            <div className="text-sm font-medium text-primary">
-              {distance} km away
-            </div>
-          )}
-          <div className="text-xs text-gray-500 bg-yellow-50 p-2 rounded">
-            📞 Contact info will be shared after request acceptance
           </div>
         </div>
 
