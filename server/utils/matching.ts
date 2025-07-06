@@ -58,13 +58,21 @@ function checkPerfectMatch(teacher1: TeacherWithUser, teacher2: TeacherWithUser)
   const teacher1WantsTeacher2District = teacher1.preferredDistricts.includes(teacher2.currentDistrict);
   const teacher2WantsTeacher1District = teacher2.preferredDistricts.includes(teacher1.currentDistrict);
   
-  return teacher1WantsTeacher2District && teacher2WantsTeacher1District;
+  // Both teachers must teach the same grade level for mutual transfer eligibility
+  const sameGradeLevel = teacher1.gradeLevel === teacher2.gradeLevel;
+  
+  return teacher1WantsTeacher2District && teacher2WantsTeacher1District && sameGradeLevel;
 }
 
 function checkNearbyMatch(
   currentTeacher: TeacherWithUser,
   otherTeacher: TeacherWithUser
 ): { distance: number; score: number } | null {
+  // Both teachers must teach the same grade level for transfer eligibility
+  if (currentTeacher.gradeLevel !== otherTeacher.gradeLevel) {
+    return null;
+  }
+  
   // Check if the other teacher is closer to current teacher's home than current teacher's current location
   const currentTeacherCurrentToHome = calculateDistanceToHome(currentTeacher);
   const otherTeacherToCurrentHome = calculateDistanceFromTeacherToHome(otherTeacher, currentTeacher);
