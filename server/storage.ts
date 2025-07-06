@@ -64,43 +64,9 @@ export class MemStorage implements IStorage {
     this.currentTeacherId = 1;
     this.currentRequestId = 1;
     this.currentMatchId = 1;
-    this.seedData();
   }
 
-  private async seedData() {
-    // Create some demo users and teachers for testing
-    try {
-      const demoUsers = [
-        { email: "demo1@example.com", password: "password123" },
-        { email: "demo2@example.com", password: "password123" },
-        { email: "demo3@example.com", password: "password123" }
-      ];
-
-      for (const userData of demoUsers) {
-        const user = await this.createUser(userData);
-        const teacherData = {
-          userId: user.id,
-          name: `Demo Teacher ${user.id}`,
-          subject: user.id === 1 ? "mathematics" : user.id === 2 ? "science" : "english",
-          gradeLevel: "high_school",
-          phoneNumber: `9876543210${user.id}`,
-          currentSchool: `Government High School ${user.id}`,
-          currentDistrict: user.id === 1 ? "patna" : user.id === 2 ? "gaya" : "muzaffarpur",
-          homeDistrict: user.id === 1 ? "gaya" : user.id === 2 ? "patna" : "darbhanga",
-          preferredDistricts: user.id === 1 ? ["gaya", "nalanda"] : user.id === 2 ? ["patna", "vaishali"] : ["darbhanga", "sitamarhi"],
-          maxDistance: 100,
-          experience: user.id * 5,
-          hideContact: true,
-          allowRequests: true,
-          emailNotifications: true,
-          isActive: true
-        };
-        await this.createTeacher(teacherData);
-      }
-    } catch (error) {
-      console.log('Demo data already exists or failed to create');
-    }
-  }
+  
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const hashedPassword = await bcrypt.hash(insertUser.password, 10);
