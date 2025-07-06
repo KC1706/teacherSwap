@@ -80,6 +80,7 @@ export const loginSchema = z.object({
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertTeacher = z.infer<typeof insertTeacherSchema>;
+export type InsertTeacherWithUserId = InsertTeacher & { userId: number };
 export type Teacher = typeof teachers.$inferSelect;
 export type InsertTransferRequest = z.infer<typeof insertTransferRequestSchema>;
 export type TransferRequest = typeof transferRequests.$inferSelect;

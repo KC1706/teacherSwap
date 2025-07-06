@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/footer";
 import Home from "@/pages/home";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
+import RegisterTeacher from "@/pages/register-teacher";
 import Dashboard from "@/pages/dashboard";
 import Matches from "@/pages/matches";
 import Requests from "@/pages/requests";
@@ -51,6 +52,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
+      <Route path="/register-teacher" component={RegisterTeacher} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/matches" component={Matches} />
       <Route path="/requests" component={Requests} />

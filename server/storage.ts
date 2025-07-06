@@ -9,6 +9,7 @@ import {
   type Match,
   type InsertUser,
   type InsertTeacher,
+  type InsertTeacherWithUserId,
   type InsertTransferRequest,
   type TeacherWithUser,
   type TransferRequestWithTeachers,
@@ -24,7 +25,7 @@ export interface IStorage {
   verifyPassword(password: string, hashedPassword: string): Promise<boolean>;
   
   // Teacher operations
-  createTeacher(teacher: InsertTeacher): Promise<Teacher>;
+  createTeacher(teacher: InsertTeacherWithUserId): Promise<Teacher>;
   getTeacherByUserId(userId: number): Promise<Teacher | undefined>;
   getTeacherById(id: number): Promise<Teacher | undefined>;
   updateTeacher(id: number, updates: Partial<InsertTeacher>): Promise<Teacher | undefined>;
@@ -63,6 +64,42 @@ export class MemStorage implements IStorage {
     this.currentTeacherId = 1;
     this.currentRequestId = 1;
     this.currentMatchId = 1;
+    this.seedData();
+  }
+
+  private async seedData() {
+    // Create some demo users and teachers for testing
+    try {
+      const demoUsers = [
+        { email: "demo1@example.com", password: "password123" },
+        { email: "demo2@example.com", password: "password123" },
+        { email: "demo3@example.com", password: "password123" }
+      ];
+
+      for (const userData of demoUsers) {
+        const user = await this.createUser(userData);
+        const teacherData = {
+          userId: user.id,
+          name: `Demo Teacher ${user.id}`,
+          subject: user.id === 1 ? "mathematics" : user.id === 2 ? "science" : "english",
+          gradeLevel: "high_school",
+          phoneNumber: `9876543210${user.id}`,
+          currentSchool: `Government High School ${user.id}`,
+          currentDistrict: user.id === 1 ? "patna" : user.id === 2 ? "gaya" : "muzaffarpur",
+          homeDistrict: user.id === 1 ? "gaya" : user.id === 2 ? "patna" : "darbhanga",
+          preferredDistricts: user.id === 1 ? ["gaya", "nalanda"] : user.id === 2 ? ["patna", "vaishali"] : ["darbhanga", "sitamarhi"],
+          maxDistance: 100,
+          experience: user.id * 5,
+          hideContact: true,
+          allowRequests: true,
+          emailNotifications: true,
+          isActive: true
+        };
+        await this.createTeacher(teacherData);
+      }
+    } catch (error) {
+      console.log('Demo data already exists or failed to create');
+    }
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
@@ -89,10 +126,28 @@ export class MemStorage implements IStorage {
     return bcrypt.compare(password, hashedPassword);
   }
 
-  async createTeacher(insertTeacher: InsertTeacher): Promise<Teacher> {
+  async createTeacher(insertTeacher: InsertTeacherWithUserId): Promise<Teacher> {
     const teacher: Teacher = {
       id: this.currentTeacherId++,
-      ...insertTeacher,
+      userId: insertTeacher.userId,
+      name: insertTeacher.name,
+      subject: insertTeacher.subject,
+      gradeLevel: insertTeacher.gradeLevel,
+      phoneNumber: insertTeacher.phoneNumber,
+      currentSchool: insertTeacher.currentSchool,
+      currentDistrict: insertTeacher.currentDistrict,
+      currentLatitude: insertTeacher.currentLatitude || null,
+      currentLongitude: insertTeacher.currentLongitude || null,
+      homeDistrict: insertTeacher.homeDistrict,
+      homeLatitude: insertTeacher.homeLatitude || null,
+      homeLongitude: insertTeacher.homeLongitude || null,
+      preferredDistricts: insertTeacher.preferredDistricts as string[],
+      maxDistance: insertTeacher.maxDistance || 100,
+      hideContact: insertTeacher.hideContact ?? true,
+      allowRequests: insertTeacher.allowRequests ?? true,
+      emailNotifications: insertTeacher.emailNotifications ?? true,
+      experience: insertTeacher.experience || 0,
+      isActive: insertTeacher.isActive ?? true,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -139,7 +194,10 @@ export class MemStorage implements IStorage {
   async createTransferRequest(insertRequest: InsertTransferRequest): Promise<TransferRequest> {
     const request: TransferRequest = {
       id: this.currentRequestId++,
-      ...insertRequest,
+      fromTeacherId: insertRequest.fromTeacherId,
+      toTeacherId: insertRequest.toTeacherId,
+      status: insertRequest.status || "pending",
+      message: insertRequest.message || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

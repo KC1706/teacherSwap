@@ -128,8 +128,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const teacher = await storage.createTeacher({
-        ...teacherData,
-        userId: req.user!.id
+        userId: req.user!.id,
+        name: teacherData.name,
+        subject: teacherData.subject,
+        gradeLevel: teacherData.gradeLevel,
+        phoneNumber: teacherData.phoneNumber,
+        currentSchool: teacherData.currentSchool,
+        currentDistrict: teacherData.currentDistrict,
+        currentLatitude: teacherData.currentLatitude,
+        currentLongitude: teacherData.currentLongitude,
+        homeDistrict: teacherData.homeDistrict,
+        homeLatitude: teacherData.homeLatitude,
+        homeLongitude: teacherData.homeLongitude,
+        preferredDistricts: teacherData.preferredDistricts,
+        maxDistance: teacherData.maxDistance,
+        hideContact: teacherData.hideContact,
+        allowRequests: teacherData.allowRequests,
+        emailNotifications: teacherData.emailNotifications,
+        experience: teacherData.experience,
+        isActive: teacherData.isActive
       });
       
       res.json(teacher);
