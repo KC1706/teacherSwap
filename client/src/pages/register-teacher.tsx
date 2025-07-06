@@ -65,13 +65,18 @@ export default function RegisterTeacher() {
       const response = await apiRequest('POST', '/api/teachers', data);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         title: "Profile created",
         description: "Your teacher profile has been created successfully!",
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
-      setLocation("/dashboard");
+      // Invalidate and refetch the auth data to get the updated teacher profile
+      await queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+      await queryClient.refetchQueries({ queryKey: ['/api/auth/me'] });
+      // Small delay to ensure state update
+      setTimeout(() => {
+        setLocation("/dashboard");
+      }, 100);
     },
     onError: (error: any) => {
       toast({

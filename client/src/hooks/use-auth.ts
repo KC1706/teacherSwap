@@ -33,7 +33,8 @@ export function useAuth() {
   const { data: authData, isLoading } = useQuery<MeResponse | null>({
     queryKey: ['/api/auth/me'],
     retry: false,
-    staleTime: Infinity,
+    staleTime: 0,
+    gcTime: 0,
   });
 
   const loginMutation = useMutation({
