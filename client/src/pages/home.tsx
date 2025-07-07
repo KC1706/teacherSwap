@@ -99,8 +99,8 @@ export default function Home() {
               <p className="text-gray-600">Our smart algorithm finds teachers who want to transfer to your location</p>
             </div>
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-accent rounded-full mb-6">
-                <Handshake className="h-8 w-8 text-white" />
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-500 rounded-full mb-6">
+                <ArrowRightLeft className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">3. Connect & Transfer</h3>
               <p className="text-gray-600">Send requests and connect with matched teachers to initiate transfers</p>
