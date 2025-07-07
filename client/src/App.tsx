@@ -16,36 +16,37 @@ import NotFound from "@/pages/not-found";
 import About from "@/pages/about";
 
 // Setup auth token for API requests
-const token = localStorage.getItem('token');
-if (token) {
-  // Override the default query function to include auth token
-  queryClient.setDefaultOptions({
-    ...queryClient.getDefaultOptions(),
-    queries: {
-      ...queryClient.getDefaultOptions().queries,
-      queryFn: async ({ queryKey }) => {
-        const res = await fetch(queryKey[0] as string, {
-          credentials: "include",
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (!res.ok) {
-          if (res.status === 401) {
-            localStorage.removeItem('token');
-            window.location.href = '/login';
-            return null;
-          }
-          const text = (await res.text()) || res.statusText;
-          throw new Error(`${res.status}: ${text}`);
-        }
-
-        return await res.json();
+queryClient.setDefaultOptions({
+  queries: {
+    queryFn: async ({ queryKey }) => {
+      const token = localStorage.getItem('token');
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
       }
+
+      const res = await fetch(queryKey[0] as string, {
+        credentials: "include",
+        headers
+      });
+
+      if (!res.ok) {
+        if (res.status === 401) {
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+          return null;
+        }
+        const text = (await res.text()) || res.statusText;
+        throw new Error(`${res.status}: ${text}`);
+      }
+
+      return await res.json();
     }
-  });
-}
+  }
+});
 
 function Router() {
   return (

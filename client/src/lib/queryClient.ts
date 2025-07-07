@@ -13,24 +13,34 @@ export const apiRequest = async (
   data?: any
 ): Promise<Response> => {
   const token = localStorage.getItem('token');
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json'
+  };
 
-  const config: RequestInit = {
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const options: RequestInit = {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
-    },
+    headers,
+    credentials: 'include',
   };
 
   if (data) {
-    config.body = JSON.stringify(data);
+    options.body = JSON.stringify(data);
   }
 
-  const response = await fetch(url, config);
+  const response = await fetch(url, options);
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Request failed');
+    if (response.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+      return response;
+    }
+    const text = await response.text();
+    throw new Error(text || response.statusText);
   }
 
   return response;
