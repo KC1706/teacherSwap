@@ -20,12 +20,12 @@ interface MatchResult {
 }
 
 interface NearbyTeachersProps {
-  nearbyTeachers: MatchResult[];
+  nearbyTeachers?: MatchResult[];
   onViewTeacher: (teacherId: number) => void;
 }
 
 export function NearbyTeachers({ nearbyTeachers, onViewTeacher }: NearbyTeachersProps) {
-  const recentNearby = nearbyTeachers.slice(0, 5);
+  const recentNearby = (nearbyTeachers || []).slice(0, 5);
 
   if (recentNearby.length === 0) {
     return (
@@ -52,7 +52,7 @@ export function NearbyTeachers({ nearbyTeachers, onViewTeacher }: NearbyTeachers
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {recentNearby.map((match) => (
+          {recentNearby?.map((match) => (
             <div
               key={match.teacher.id}
               className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
@@ -82,7 +82,7 @@ export function NearbyTeachers({ nearbyTeachers, onViewTeacher }: NearbyTeachers
             </div>
           ))}
         </div>
-        {nearbyTeachers.length > 5 && (
+        {(nearbyTeachers?.length || 0) > 5 && (
           <div className="mt-4 text-center">
             <Link href="/matches">
               <Button variant="outline" size="sm">
