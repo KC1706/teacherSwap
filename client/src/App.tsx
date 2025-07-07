@@ -13,6 +13,7 @@ import Dashboard from "@/pages/dashboard";
 import Matches from "@/pages/matches";
 import Requests from "@/pages/requests";
 import NotFound from "@/pages/not-found";
+import About from "@/pages/about";
 
 // Setup auth token for API requests
 const token = localStorage.getItem('token');
@@ -29,7 +30,7 @@ if (token) {
             'Authorization': `Bearer ${token}`
           }
         });
-        
+
         if (!res.ok) {
           if (res.status === 401) {
             localStorage.removeItem('token');
@@ -39,7 +40,7 @@ if (token) {
           const text = (await res.text()) || res.statusText;
           throw new Error(`${res.status}: ${text}`);
         }
-        
+
         return await res.json();
       }
     }
@@ -56,6 +57,7 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/matches" component={Matches} />
       <Route path="/requests" component={Requests} />
+      <Route path="/about" component={About} />
       <Route component={NotFound} />
     </Switch>
   );

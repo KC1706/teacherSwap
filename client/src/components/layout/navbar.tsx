@@ -14,6 +14,7 @@ export function Navbar() {
     { href: "/dashboard", label: "Dashboard" },
     { href: "/matches", label: "Find Matches" },
     { href: "/requests", label: "Requests" },
+    { href: "/about", label: "About Us" },
   ];
 
   const isActiveLink = (href: string) => location === href;
