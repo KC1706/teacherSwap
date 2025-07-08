@@ -31,7 +31,26 @@ export const apiRequest = async (
     options.body = JSON.stringify(data);
   }
 
+  // Log the request
+  console.log('[API REQUEST]', { method, url, data, options });
+
   const response = await fetch(url, options);
+
+  // Log the response status
+  console.log('[API RESPONSE]', { url, status: response.status });
+
+  // Try to log the response body (if possible)
+  let responseBody;
+  try {
+    responseBody = await response.clone().json();
+  } catch (e) {
+    try {
+      responseBody = await response.clone().text();
+    } catch (e2) {
+      responseBody = '[unreadable]';
+    }
+  }
+  console.log('[API RESPONSE BODY]', { url, body: responseBody });
 
   if (!response.ok) {
     if (response.status === 401) {

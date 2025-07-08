@@ -30,8 +30,10 @@ export function useAuth() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const token = typeof window !== "undefined" ? localStorage.getItem('token') : null;
   const { data: authData, isLoading } = useQuery<MeResponse | null>({
     queryKey: ['/api/auth/me'],
+    enabled: !!token, // Only run if token exists
     retry: false,
     staleTime: Infinity,
   });
