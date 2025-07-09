@@ -238,8 +238,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       if (subject && subject !== 'all') {
-        filteredMatches = filteredMatches.filter(match => 
-          match.teacher.subjects.toLowerCase().includes((subject as string).toLowerCase())
+        filteredMatches = filteredMatches.filter(match =>
+          match.teacher.subject.toLowerCase().includes((subject as string).toLowerCase())
         );
       }
 
@@ -261,7 +261,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check if request already exists
       const existingRequests = await storage.getTransferRequestsByTeacher(teacher.id);
-      const alreadyExists = existingRequests.some(r => 
+      const alreadyExists = existingRequests.some(r =>
         r.toTeacherId === requestData.toTeacherId && r.status === 'pending'
       );
 
