@@ -1,11 +1,15 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
+
+
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
     throw new Error(`${res.status}: ${text}`);
   }
 }
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 export const apiRequest = async (
   method: string,
@@ -31,13 +35,16 @@ export const apiRequest = async (
     options.body = JSON.stringify(data);
   }
 
-  // Log the request
-  console.log('[API REQUEST]', { method, url, data, options });
+  // Prepend API_BASE_URL if url starts with /
+  const fullUrl = url.startsWith('/') ? `${API_BASE_URL}${url}` : url;
 
-  const response = await fetch(url, options);
+  // Log the request
+  console.log('[API REQUEST]', { method, url: fullUrl, data, options });
+
+  const response = await fetch(fullUrl, options);
 
   // Log the response status
-  console.log('[API RESPONSE]', { url, status: response.status });
+  console.log('[API RESPONSE]', { url: fullUrl, status: response.status });
 
   // Try to log the response body (if possible)
   let responseBody;
@@ -50,7 +57,7 @@ export const apiRequest = async (
       responseBody = '[unreadable]';
     }
   }
-  console.log('[API RESPONSE BODY]', { url, body: responseBody });
+  console.log('[API RESPONSE BODY]', { url: fullUrl, body: responseBody });
 
   if (!response.ok) {
     if (response.status === 401) {
