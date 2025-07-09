@@ -239,7 +239,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (subject && subject !== 'all') {
         filteredMatches = filteredMatches.filter(match => 
-          match.teacher.subject.toLowerCase().includes((subject as string).toLowerCase())
+          match.teacher.subjects.toLowerCase().includes((subject as string).toLowerCase())
         );
       }
 
